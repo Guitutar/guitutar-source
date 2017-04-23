@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration version="1.0.10.0">
+  <DisplayManager>
+    <SystemInitScript/>
+    <SystemStartScript/>
+  </DisplayManager>
+  <General>
+    <HarmonyPath path="../.."/>
+    <Processor name=""/>
+    <ForceOptimization flag="true"/>
+    <MergeStrategy flag="USER_ALL"/>
+  </General>
+  <Manifest>
+    <Files>
+      <File>
+        <Name>osal_impl_basic.h</Name>
+        <Path>Header Files/framework/osal/src</Path>
+      </File>
+      <File>
+        <Name>peripheral_common_32bit.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
+      </File>
+      <File>
+        <Name>sample_module.h</Name>
+        <Path>Header Files/framework/sample</Path>
+      </File>
+      <File>
+        <Name>sample_module.c</Name>
+        <Path>Source Files/framework/sample/src</Path>
+      </File>
+      <File>
+        <Name>driver_common.h</Name>
+        <Path>Header Files/framework/driver</Path>
+      </File>
+      <File>
+        <Name>sys_devcon.c</Name>
+        <Path>Source Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
+        <Name>drv_usart_byte_model.c</Name>
+        <Path>Source Files/framework/driver/usart/src/dynamic</Path>
+      </File>
+      <File>
+        <Name>osal.h</Name>
+        <Path>Header Files/framework/osal</Path>
+      </File>
+      <File>
+        <Name>drv_usart_local.h</Name>
+        <Path>Header Files/framework/driver/usart/src</Path>
+      </File>
+      <File>
+        <Name>sys_ports.h</Name>
+        <Path>Header Files/framework/system/ports</Path>
+      </File>
+      <File>
+        <Name>drv_usart.c</Name>
+        <Path>Source Files/framework/driver/usart/src/dynamic</Path>
+      </File>
+      <File>
+        <Name>driver.h</Name>
+        <Path>Header Files/framework/driver</Path>
+      </File>
+      <File>
+        <Name>peripheral_common.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
+      </File>
+      <File>
+        <Name>sys_common.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
+        <Name>sys_buffer.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
+        <Name>sys_int_pic32.c</Name>
+        <Path>Source Files/framework/system/int/src</Path>
+      </File>
+      <File>
+        <Name>sys_clk.h</Name>
+        <Path>Header Files/framework/system/clk</Path>
+      </File>
+      <File>
+        <Name>osal_impl_none.h</Name>
+        <Path>Header Files/framework/osal/src</Path>
+      </File>
+      <File>
+        <Name>sys_clk_mapping.h</Name>
+        <Path>Header Files/framework/system/clk</Path>
+      </File>
+      <File>
+        <Name>osal_definitions.h</Name>
+        <Path>Header Files/framework/osal</Path>
+      </File>
+      <File>
+        <Name>sys_int_mapping.h</Name>
+        <Path>Header Files/framework/system/int</Path>
+      </File>
+      <File>
+        <Name>gfx_palette.h</Name>
+        <Path>Header Files/framework/gfx</Path>
+      </File>
+      <File>
+        <Name>sys_int_private.h</Name>
+        <Path>Header Files/framework/system/int/src</Path>
+      </File>
+      <File>
+        <Name>sys_devcon.h</Name>
+        <Path>Header Files/framework/system/devcon</Path>
+      </File>
+      <File>
+        <Name>system.h</Name>
+        <Path>Header Files/framework/system</Path>
+      </File>
+      <File>
+        <Name>drv_usart.h</Name>
+        <Path>Header Files/framework/driver/usart</Path>
+      </File>
+      <File>
+        <Name>sys_debug.h</Name>
+        <Path>Header Files/framework/system/debug</Path>
+      </File>
+      <File>
+        <Name>drv_usart_variant_mapping.h</Name>
+        <Path>Header Files/framework/driver/usart/src</Path>
+      </File>
+      <File>
+        <Name>sys_module.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
+        <Name>sys_devcon_pic32mx.c</Name>
+        <Path>Source Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
+        <Name>sys_devcon_local.h</Name>
+        <Path>Header Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
+        <Name>peripheral.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
+      </File>
+      <File>
+        <Name>sys_queue.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
+        <Name>sys_int.h</Name>
+        <Path>Header Files/framework/system/int</Path>
+      </File>
+    </Files>
+    <Templates>
+      <Template>
+        <Name>sys_ports_static.c</Name>
+        <Path>Source Files/app/system_config/default/framework/system/ports/src</Path>
+        <Checksum>E9EAE5269E319AE6BFA9FC739816456E</Checksum>
+      </Template>
+      <Template>
+        <Name>system_init.c</Name>
+        <Path>Source Files/app/system_config/default</Path>
+        <Checksum>DFFD4C0D78E3320FC1E6F1093535B4EB</Checksum>
+      </Template>
+      <Template>
+        <Name>main.c</Name>
+        <Path>Source Files/app</Path>
+      </Template>
+      <Template>
+        <Name>system_tasks.c</Name>
+        <Path>Source Files/app/system_config/default</Path>
+        <Checksum>EDE9F686E8D3F575CCF0A40895F2EF9F</Checksum>
+      </Template>
+      <Template>
+        <Name>system_config.h</Name>
+        <Path>Header Files/app/system_config/default</Path>
+        <Checksum>F051241440188FB761F399CAD9FE17D3</Checksum>
+      </Template>
+      <Template>
+        <Name>system_definitions.h</Name>
+        <Path>Header Files/app/system_config/default</Path>
+        <Checksum>A5DEE1C955E16DC496E056B8AFCEDDCF</Checksum>
+      </Template>
+      <Template>
+        <Name>system_exceptions.c</Name>
+        <Path>Source Files/app/system_config/default</Path>
+        <Checksum>C111969CA43D6CEA1E9E33A6164E7AE0</Checksum>
+      </Template>
+      <Template>
+        <Name>app.h</Name>
+        <Path>Header Files/app</Path>
+      </Template>
+      <Template>
+        <Name>sys_clk_static.h</Name>
+        <Path>Header Files/app/system_config/default/framework/system/clk</Path>
+        <Checksum>B4BD59D8D7C4DA95DC5E3B57755FD352</Checksum>
+      </Template>
+      <Template>
+        <Name>system_interrupt.c</Name>
+        <Path>Source Files/app/system_config/default</Path>
+        <Checksum>691849187DDFA8E1696B5C5CACFB8D91</Checksum>
+      </Template>
+      <Template>
+        <Name>sys_clk_static.c</Name>
+        <Path>Source Files/app/system_config/default/framework/system/clk/src</Path>
+        <Checksum>6AF033A7E8ECB69981D88ED27526EF17</Checksum>
+      </Template>
+      <Template>
+        <Name>app.c</Name>
+        <Path>Source Files/app</Path>
+      </Template>
+    </Templates>
+    <CompilerItems>
+      <C32>
+        <Include value="C:\microchip\harmony\v1_10\apps\TestProject1\firmware\src"/>
+        <Include value="C:\microchip\harmony\v1_10\apps\TestProject1\firmware\src\system_config\default"/>
+        <Include value="C:\microchip\harmony\v1_10\apps\TestProject1\firmware\src\default"/>
+        <Include value="C:\microchip\harmony\v1_10\framework"/>
+        <Include value="C:\microchip\harmony\v1_10\apps\TestProject1\firmware\src\system_config\default\framework"/>
+      </C32>
+    </CompilerItems>
+    <Libraries>
+      <Library value="../../../../bin/framework/peripheral/PIC32MX570F512L_peripherals.a"/>
+    </Libraries>
+  </Manifest>
+</configuration>
