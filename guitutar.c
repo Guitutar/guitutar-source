@@ -4,7 +4,7 @@
 #include "guitutar.h"
 
 PORTS_CHANNEL getChannelFretSerial(int fretNum) {
-    // simple for basic development, will need to create a lookup
+//    return PORT_CHANNEL_A;
     switch(fretNum){
         // PCB 1 Decoding
         case 0:
@@ -24,14 +24,14 @@ PORTS_CHANNEL getChannelFretSerial(int fretNum) {
             return PORT_CHANNEL_D;
         // PCB 3 Decoding
         case 7:
-            return PORT_CHANNEL_A;
+            return PORT_CHANNEL_D;
         case 8:
             return PORT_CHANNEL_D;
         case 9:
-            return PORT_CHANNEL_D;
+            return PORT_CHANNEL_A;
         case 10:
             return PORT_CHANNEL_A;
-        // PCB 1 Decoding
+        // PCB 4 Decoding
         case 11:
             return PORT_CHANNEL_F;
         case 12:
@@ -54,6 +54,7 @@ PORTS_CHANNEL getChannelFretOutputClk(int fretNum) {
 }
 
 PORTS_BIT_POS getBitPosFretSerial(int fretNum) {
+//    return PORTS_BIT_POS_4;
     switch(fretNum){
         // PCB 1 Decoding
         case 0:
@@ -73,13 +74,13 @@ PORTS_BIT_POS getBitPosFretSerial(int fretNum) {
             return PORTS_BIT_POS_0;
         // PCB 3 Decoding
         case 7:
-            return PORTS_BIT_POS_4;
-        case 8:
             return PORTS_BIT_POS_11;
-        case 9:
+        case 8:
             return PORTS_BIT_POS_10;
-        case 10:
+        case 9:
             return PORTS_BIT_POS_5;
+        case 10:
+            return PORTS_BIT_POS_4;
         // PCB 4 Decoding
         case 11:
             return PORTS_BIT_POS_3;
@@ -132,6 +133,12 @@ void displayNote(uint8_t fret, int fretNum) {
 void clockPin(PORTS_CHANNEL channel, PORTS_BIT_POS bitPos) {
     SYS_PORTS_PinWrite(PORTS_ID_0, channel, bitPos, true); // input serial values
     SYS_PORTS_PinWrite(PORTS_ID_0, channel, bitPos, false);
+}
+
+void shiftRegClear() {
+    SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_14, true);
+    SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_14, false);
+    SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_14, true);
 }
 
 void emptyFretboard(uint8_t* fretboardArray, int numFrets) {
