@@ -6,6 +6,18 @@
 extern "C" {
 #endif
     
+#ifndef CONST_WAIT_TIME
+#define CONST_WAIT_TIME 10000000
+#endif
+    
+#ifndef AVG_SAMPLE_SIZE
+#define AVG_SAMPLE_SIZE 10000
+#endif
+    
+#ifndef AVG_THRESHOLD
+#define AVG_THRESHOLD AVG_SAMPLE_SIZE/10000
+#endif
+    
 typedef enum String_t {
     E = 0,
     A = 1,
@@ -23,6 +35,12 @@ typedef union Note_t {
     };
 } Note;
 
+// COLE
+/*typedef struct Delay_t{
+    Note time;
+    Note *next;
+} Delay;*/
+
 typedef struct Chord_t {
     Note E;
     Note A;
@@ -30,6 +48,7 @@ typedef struct Chord_t {
     Note G;
     Note B;
     Note e;
+    // Delay delay; COLE
 } Chord;
 
 typedef struct Song_t {
@@ -38,10 +57,24 @@ typedef struct Song_t {
     Note* notes;
 } Song;
 
+typedef struct RollAvg_t{
+    int edge;
+    bool samples[AVG_SAMPLE_SIZE];
+    int total;
+} RollAvg;
+
+RollAvg newRollAvg();
+void initRollAvg(RollAvg *raPtr);
+void addToAvg(RollAvg *raPtr, bool value);
+bool isAvgOn(RollAvg *raPtr);
+
 Note createNote(int fretNum, String string);
 void displayNote(uint8_t fret, int fretNum);
 Chord createChord(Note E, Note A, Note D, Note G, Note B, Note e);
 void displayChord(Chord chord);
+//Chord *newChord();
+//int addNote(Chord *cPtr);
+//int addDelay(Chord *cPtr);
 
 void emptyFretboard(uint8_t* fretboardArray, int numFrets);
 
@@ -53,6 +86,8 @@ PORTS_BIT_POS getBitPosFretInputClk(int fretNum);
 PORTS_BIT_POS getBitPosFretOutputClk(int fretNum);
 
 void clockPin(PORTS_CHANNEL channel, PORTS_BIT_POS bitPos);
+
+bool isNoteCorrect(int fretNum);
 
 
 
