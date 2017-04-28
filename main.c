@@ -73,16 +73,60 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 // *****************************************************************************
 
-void sleep() {
-    bool currVal = true;
-    while(currVal){
-        currVal = SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_3);
-        SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_7, currVal);
-    }
-    while(!currVal){
-        currVal = SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_3);
-        SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_7, currVal);
-    }
+void wait4next(bool timeMode, RollAvg *raPtr, int fretNum) {
+    //bool currVal = true;
+    if (false){
+        if (raPtr->total != 0){
+            initRollAvg(raPtr);
+        }
+        int i;
+        for (i = 0; i < CONST_WAIT_TIME; i++){}
+    } else {
+        while(isAvgOn(raPtr) || isNoteBeingPlayed(fretNum)){
+            addToAvg(raPtr, SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5));
+            //currVal = SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5);
+        }
+        while(!isAvgOn(raPtr) || !isNoteBeingPlayed(fretNum)){
+            addToAvg(raPtr, SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5));
+            //currVal = SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5);
+        }
+//        while(!isNoteBeingPlayed(fretNum)){}
+//        while(isNoteBeingPlayed(fretNum)){}
+    }   
+}
+
+void basicSong() {
+    displayNote(16,10);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 7);
+
+    displayNote(32,10);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 7);
+
+    displayNote(64,10);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 7);
+}
+
+void smokeonthewater() {
+    displayNote(48, 0);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 0);
+    
+    displayNote(48, 3);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 3);
+    
+    displayNote(48, 5);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 5);
+    
+    displayNote(48, 0);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 0);
+    
+    displayNote(48, 3);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 3);
+    
+    displayNote(48, 6);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 6);
+    
+    displayNote(48, 5);
+    wait4next(SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_G, PORTS_BIT_POS_1), &rollAvg, 5);
 }
 
 int main ( void )
@@ -91,28 +135,20 @@ int main ( void )
     SYS_Initialize ( NULL );
     SYS_PORTS_Initialize();
 
-    SYS_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_14, true);
+    shiftRegClear();
+    clockPin(PORT_CHANNEL_D, PORTS_BIT_POS_8);
+    
+    RollAvg rollAvg = newRollAvg();
+    
+//    runDemo();
 
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
-
-        displayNote(252, 7);
-//        sleep();
-//        displayNote(8, 1);
-//        sleep();
-//        displayNote(16, 1);
-//        sleep();
-//        displayNote(32, 1);
-//        sleep();
-//        displayNote(64, 1);
-//        sleep();
-//        displayNote(128, 1);
-//        sleep();
         
-        
-        
+        basicSong();
+       
         
         
     }
