@@ -222,47 +222,30 @@ void shiftRegClear() {
 void runDemo() {
     int i, j, k;
     while(true) {
-        for(i = 7; i < 11; ++i) { // frets 0-15
-//        i = 8;    
+        for(i = 0; i < 15; ++i) { // frets 0-15  
             for(j = 128; j >= 4; j /= 2) {
-//            j = 128;
                 shiftRegClear();
                 clockPin(PORT_CHANNEL_D, PORTS_BIT_POS_8);
                 //for (k = 0; k < CONST_WAIT_TIME; k++){}
                 displayNote(j, i);
                 for (k = 0; k < CONST_WAIT_TIME; k++){}
-//                shiftRegClear();
-//                displayNote(j*2, i);
-//                for (k = 0; k < CONST_WAIT_TIME; k++){}
-//                shiftRegClear();
-//                displayNote(j*4, i);
-//                for (k = 0; k < CONST_WAIT_TIME; k++){}
-//                shiftRegClear();
-//                displayNote(j*8, i);
-//                for (k = 0; k < CONST_WAIT_TIME; k++){}
-//                shiftRegClear();
-//                displayNote(j*16, i);
-//                for (k = 0; k < CONST_WAIT_TIME; k++){}
-//                shiftRegClear();
-//                displayNote(j*32, i);
-//                for (k = 0; k < CONST_WAIT_TIME; k++){}
             }
         }
     }
 }
 
-bool isNoteBeingPlayed(int fretNum) {
+bool isFretPressed(int fretNum) {
     PORTS_CHANNEL noteChannel = getChannelFretSwitch(fretNum);
     PORTS_BIT_POS noteBitPos = getBitPosFretSwitch(fretNum);
     
     return !(SYS_PORTS_PinRead(PORTS_ID_0, noteChannel, noteBitPos));
 }
 
-void emptyFretboard(uint8_t* fretboardArray, int numFrets) {
-    int i;
-    for(i = 0; i < numFrets; ++i)
-        fretboardArray[i] = 0;
-}
+//void emptyFretboard(uint8_t* fretboardArray) {
+//    int i;
+//    for(i = 0; i < numFrets; ++i)
+//        fretboardArray[i] = 0;
+//}
 
 void updateFretboard(uint8_t* fretboardArray, Note note) {
     fretboardArray[note.fret] ^= (1 << note.string);
@@ -300,7 +283,208 @@ bool isAvgOn(RollAvg *raPtr){
     return (raPtr->total >= AVG_THRESHOLD);
 }
 
-//COLE
-//Chord *newChord(){
+void clearChord(Chord *cPtr){
+    Delay *temp = NULL;
+    cPtr->E.noteByte = 0;
+    cPtr->A.noteByte = 0;
+    cPtr->D.noteByte = 0;
+    cPtr->G.noteByte = 0;
+    cPtr->B.noteByte = 0;
+    cPtr->e.noteByte = 0;
+    while(cPtr->delay != NULL){
+        temp = cPtr->delay;
+        cPtr->delay = cPtr->delay->next;
+        free(temp);
+    }
     
-//}
+}
+bool addNote(Chord *cPtr, Note note){
+    Note* nPtr = NULL;
+    
+    switch(note.string){
+        case 0:
+            nPtr = &(cPtr->E);
+            break;
+        case 1:
+            nPtr = &(cPtr->A);
+            break;
+        case 2:
+            nPtr = &(cPtr->D);    
+            break;
+        case 3:
+            nPtr = &(cPtr->G);
+            break;
+        case 4:
+            nPtr = &(cPtr->B);
+            break;
+        case 5:
+            nPtr = &(cPtr->e);
+            break;    
+    }
+    if (nPtr->fret != 0){
+        return false;
+    }
+    nPtr->fret = note.fret;
+    return true;
+    
+}
+bool addDelay(Chord *cPtr, Note time){
+    Delay *delay = NULL;
+    Delay *header = cPtr->delay;
+    
+    delay = (Delay*)malloc(sizeof(Delay));
+    if (delay == NULL){
+        return false;
+    }
+    delay->time = time;
+    delay->next = NULL;
+    
+    if (header == NULL){
+        cPtr->delay = delay;
+    } else {
+        while (header->next != NULL){
+            header = header->next;
+        }
+        header->next = delay;
+    }
+    return true;
+}
+Note getChordNote(Chord chord, int stringNum){
+    switch (stringNum){
+        case 0:
+            return chord.E;
+        case 1:
+            return chord.A;
+        case 2:
+            return chord.D;
+        case 3:
+            return chord.G;
+        case 4:
+            return chord.B;
+        case 5:
+            return chord.e;
+    }
+}
+
+void displayChord(Chord chord){
+    int stringNum;
+    uint8_t fretNum;
+    Note note;
+    PORTS_CHANNEL pChannel;
+    PORTS_BIT_POS pBit;
+    for (stringNum = 5; stringNum >= 0; stringNum--){
+        note = getChordNote(chord, stringNum);
+        for (fretNum = 0; fretNum < NUM_ACTIVE_FRETS; fretNum++){
+//            assignPorts(convertToActiveFret(fretNum), &pChannel, &pBit);
+            assignPorts(fretNum, &pChannel, &pBit);
+            if (note.fret == fretNum){
+                SYS_PORTS_PinWrite(PORTS_ID_0, pChannel, pBit, false);
+            } else{
+                SYS_PORTS_PinWrite(PORTS_ID_0, pChannel, pBit, true);
+            }
+        }
+        clockShiftInput();
+    }
+    clockShiftOutput();
+}
+
+int convertToActiveFret(int fretNum){
+    int i, count;
+    i = count = 0;
+    while(count < fretNum){
+        if (ACTIVE_FRETS[i] == '1'){
+            count++;
+        }
+        i++;
+    }
+    return --i;
+}
+
+void waitToResume(bool timeMode, Chord chord, RollAvg *raPtr){
+    if (timeMode){
+        if (raPtr->total != 0){
+            initRollAvg(raPtr);
+        }
+        int i;
+        for (i = 0; i < CONST_WAIT_TIME; i++){}
+//        Delay *delay = chord.delay;
+//        while (delay != NULL){
+//            for (i = 0; i < delay.time; i++){}
+//            delay = delay->next;
+//        }
+    } else {
+        while (isAvgOn(raPtr) || areFretsPressed(chord)){
+            addToAvg(raPtr, SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5));
+        }
+        while (!isAvgOn(raPtr) || !areFretsPressed(chord)){
+            addToAvg(raPtr, SYS_PORTS_PinRead(PORTS_ID_0, PORT_CHANNEL_F, PORTS_BIT_POS_5));
+        }
+    }
+}
+
+bool areFretsPressed(Chord chord){
+    Note note;
+    int stringNum;
+    for (stringNum = 0; stringNum < 6; stringNum++){
+        note = getChordNote(chord, stringNum);
+        if (!isFretPressed(note.fret)){
+            return false;
+        }
+    }
+    return true;
+}
+
+void executeChord(Chord *cPtr, RollAvg *raPtr){
+    displayChord(*cPtr);
+    waitToResume(false, *cPtr, raPtr);
+    clearChord(cPtr);
+}
+
+bool assignPorts(int fretNum, PORTS_CHANNEL *pc, PORTS_BIT_POS *pb){
+    *pc = getChannelFretSerial(fretNum);
+    *pb = getBitPosFretSerial(fretNum);
+    return true;
+}
+
+void runTestSong(){
+    int i;
+    bool isDelay = false;
+    Chord chord;
+    Note note;
+    RollAvg rollAvg = newRollAvg();
+    
+    //String 5 - Fret 9
+    //String 3 - Fret 9
+    //Break
+    //String 4 - Fret 5
+    //String 2 - Fret 5
+    //Break
+    //String 1 - Fret 5
+    //String 4 - Fret 9
+    //Break
+    uint8_t song[TEST_SONG_SIZE] = {137,73,224,107,43,224,5,111,224};
+    
+    clearChord(&chord);
+    while(true){
+        for (i = 0; i < TEST_SONG_SIZE; i++){
+            note = (Note)song[i];
+            if (note.noteByte != 224){
+                if (isDelay){
+                    executeChord(&chord, &rollAvg);
+                }
+                addNote(&chord, note);
+            }
+            else{
+                addDelay(&chord, note);
+                isDelay = true;
+            }
+        }
+    }
+}
+
+void clockShiftInput(){
+    clockPin(PORT_CHANNEL_A, PORTS_BIT_POS_15);
+}
+void clockShiftOutput(){
+    clockPin(PORT_CHANNEL_D, PORTS_BIT_POS_8);
+}
