@@ -18,6 +18,19 @@ extern "C" {
 #define AVG_THRESHOLD AVG_SAMPLE_SIZE/10000
 #endif
     
+#ifndef NUM_ACTIVE_FRETS
+#define NUM_ACTIVE_FRETS 16
+#endif
+
+#ifndef ACTIVE_FRETS
+//                    [ 1][2][ 3][ 4 ]
+#define ACTIVE_FRETS "1111111111111111"
+#endif
+    
+#ifndef TEST_SONG_SIZE
+#define TEST_SONG_SIZE 10
+#endif
+
 typedef enum String_t {
     E = 0,
     A = 1,
@@ -35,11 +48,11 @@ typedef union Note_t {
     };
 } Note;
 
-// COLE
-/*typedef struct Delay_t{
+
+typedef struct Delay_t{
     Note time;
-    Note *next;
-} Delay;*/
+    struct Delay_t *next;
+} Delay;
 
 typedef struct Chord_t {
     Note E;
@@ -48,7 +61,7 @@ typedef struct Chord_t {
     Note G;
     Note B;
     Note e;
-    // Delay delay; COLE
+    Delay *delay;
 } Chord;
 
 typedef struct Song_t {
@@ -63,6 +76,10 @@ typedef struct RollAvg_t{
     int total;
 } RollAvg;
 
+typedef struct TestSong_t{
+    uint8_t Song[TEST_SONG_SIZE]; 
+} TestSong;
+
 RollAvg newRollAvg();
 void initRollAvg(RollAvg *raPtr);
 void addToAvg(RollAvg *raPtr, bool value);
@@ -71,12 +88,27 @@ bool isAvgOn(RollAvg *raPtr);
 Note createNote(int fretNum, String string);
 void displayNote(uint8_t fret, int fretNum);
 Chord createChord(Note E, Note A, Note D, Note G, Note B, Note e);
-void displayChord(Chord chord);
-//Chord *newChord();
-//int addNote(Chord *cPtr);
-//int addDelay(Chord *cPtr);
 
-void emptyFretboard(uint8_t* fretboardArray, int numFrets);
+//region Fretboard Overhaul
+void displayChord(Chord chord);
+void clearChord(Chord *cPtr);
+bool addNote(Chord *cPtr, Note note);
+bool addDelay(Chord *cPtr, Note time);
+bool assignPorts(int fretNum, PORTS_CHANNEL *pc, PORTS_BIT_POS *pb);
+Note getChordNote(Chord chord, int stringNum);
+int convertToActiveFret(int fretNum);
+void executeChord(Chord *cPtr, RollAvg *raPtr);
+void waitToResume(bool timeMode, Chord chord, RollAvg *raPtr);
+bool areFretsPressed(Chord chord);
+
+void runTestSong();
+
+void clockShiftInput();
+void clockShiftOutput();
+//endregion
+
+
+void emptyFretboard(Note* fretboardArray);
 
 PORTS_CHANNEL getChannelFretSerial(int fretNum);
 PORTS_CHANNEL getChannelFretInputClk(int fretNum);
@@ -87,7 +119,7 @@ PORTS_BIT_POS getBitPosFretOutputClk(int fretNum);
 
 void clockPin(PORTS_CHANNEL channel, PORTS_BIT_POS bitPos);
 
-bool isNoteCorrect(int fretNum);
+bool isFretPressed(int fretNum);
 
 
 
